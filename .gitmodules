@@ -1,0 +1,3 @@
+[submodule "arctic-captions"]
+	path = arctic-captions
+	url = https://github.com/kelvinxu/arctic-captions
