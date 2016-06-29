@@ -1,3 +1,6 @@
+[submodule "cxj273-captions"]
+	path = cxj273-captions
+	url = https://github.com/cxj273/arctic-captions
 [submodule "arctic-captions"]
 	path = arctic-captions
 	url = https://github.com/kelvinxu/arctic-captions
