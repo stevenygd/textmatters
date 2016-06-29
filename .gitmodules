@@ -1,3 +1,6 @@
 [submodule "arctic-captions"]
 	path = arctic-captions
 	url = https://github.com/kelvinxu/arctic-captions
+[submodule "Recipes"]
+	path = Recipes
+	url = https://github.com/Lasagne/Recipes.git
