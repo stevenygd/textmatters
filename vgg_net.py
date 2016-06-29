@@ -59,3 +59,20 @@ def build_model():
     net['prob'] = NonlinearityLayer(net['fc8'], softmax)
 
     return net
+
+def load_param():
+    import pickle
+
+    model = pickle.load(open('vgg_cnn_s.pkl'))
+    CLASSES = model['synset words']
+    MEAN_IMAGE = model['mean image']
+    return model
+
+def prepare_image(img):
+
+
+if __name__ == "__main__":
+    net = build_model()
+    model = load_param()
+    lasagne.layers.set_all_param_values(output_layer, model['values'])
+

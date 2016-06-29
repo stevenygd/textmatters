@@ -4,3 +4,4 @@ build:
 	sudo pip install -U scikit-image
 	sudo pip install -U argparse
 	sudo pip install -U theano
+	sudo pip install -U lasagne
