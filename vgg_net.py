@@ -15,7 +15,6 @@ from lasagne.layers import Pool2DLayer as PoolLayer
 from lasagne.layers.dnn import Conv2DDNNLayer as ConvLayer
 from lasagne.nonlinearities import softmax
 
-
 def build_model():
     net = {}
     net['input'] = InputLayer((None, 3, 224, 224))
@@ -58,7 +57,7 @@ def build_model():
         net['fc7_dropout'], num_units=1000, nonlinearity=None)
     net['prob'] = NonlinearityLayer(net['fc8'], softmax)
 
-    return net
+    return net, net['prob'] # the whole net and the output layer
 
 def load_param():
     import pickle
@@ -68,11 +67,47 @@ def load_param():
     MEAN_IMAGE = model['mean image']
     return model
 
-def prepare_image(img):
+def prepare_image(im):
+    import io
+    import skimage.transform
 
+    # Resize so smallest dim = 256, preserving aspect ratio
+    h, w, _ = im.shape
+    if h < w:
+    im = skimage.transform.resize(im, (256, w*256/h), preserve_range=True)
+    else:
+    im = skimage.transform.resize(im, (h*256/w, 256), preserve_range=True)
 
-if __name__ == "__main__":
-    net = build_model()
+    # Central crop to 224x224
+    h, w, _ = im.shape
+    im = im[h//2-112:h//2+112, w//2-112:w//2+112]
+
+    rawim = np.copy(im).astype('uint8')
+
+    # Shuffle axes to c01
+    im = np.swapaxes(np.swapaxes(im, 1, 2), 0, 1)
+
+    # Convert to BGR
+    im = im[::-1, :, :]
+
+    im = im - MEAN_IMAGE
+    return rawim, floatX(im[np.newaxis])
+
+def get_vgg_net():
+    net, output_layer = build_model()
     model = load_param()
     lasagne.layers.set_all_param_values(output_layer, model['values'])
+    return output_layer
+
+if __name__ == "__main__":
+    rawimd, im = prep_image(img)
+
+    prob = np.array(lasagne.layers.get_output(output_layer, im, deterministic=True).eval())
+    top5 = np.argsort(prob[0])[-1:-6:-1]
+
+    plt.figure()
+    plt.imshow(rawimd.astype('uint8'))
+    plt.axis('off')
+    for n, label in enumerate(top5):
+        plt.text(250, 70 + n * 20, '{}. {}'.format(n+1, CLASSES[label]), fontsize=14)
 
