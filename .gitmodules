@@ -1,6 +1,6 @@
-[submodule "arctic-captions"]
-	path = arctic-captions
-	url = https://github.com/kelvinxu/arctic-captions
+[submodule "cxj273-captions"]
+	path = cxj273-captions
+	url = https://github.com/cxj273/arctic-captions
 [submodule "Recipes"]
 	path = Recipes
 	url = https://github.com/Lasagne/Recipes.git
