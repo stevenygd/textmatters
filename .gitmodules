@@ -3,4 +3,4 @@
 	url = https://github.com/Lasagne/Recipes.git
 [submodule "arctic-captions"]
 	path = arctic-captions
-	url = https://github.com/cxj273/arctic-captions.git
+	url = https://github.com/zhuyifan1996/arctic-captions.git
