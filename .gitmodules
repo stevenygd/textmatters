@@ -4,3 +4,6 @@
 [submodule "arctic-captions"]
 	path = arctic-captions
 	url = https://github.com/zhuyifan1996/arctic-captions.git
+[submodule "coco-text"]
+	path = coco-text
+	url = https://github.com/stevenygd/coco-text.git
