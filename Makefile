@@ -1,7 +1,7 @@
 
 build:
-	sudo pip install -U scikit-learn
-	sudo pip install -U scikit-image
-	sudo pip install -U argparse
-	sudo pip install -U theano
-	sudo pip install -U lasagne
+	pip install --user scikit-learn
+	pip install --user scikit-image
+	pip install --user argparse
+	pip install --user theano
+	pip install --user lasagne
