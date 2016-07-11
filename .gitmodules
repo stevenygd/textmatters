@@ -7,3 +7,6 @@
 [submodule "coco-text"]
 	path = coco-text
 	url = https://github.com/stevenygd/coco-text.git
+[submodule "neuraltalk2"]
+	path = neuraltalk2
+	url = https://github.com/zhuyifan1996/neuraltalk2.git
