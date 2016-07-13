@@ -4,3 +4,4 @@ data/
 archive/
 tmp/
 .ipynb_checkpoints/
+*.pyc
