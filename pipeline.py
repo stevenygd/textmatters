@@ -27,6 +27,7 @@ IMG_PATH = 'data/coco/'
 IMG_TYPE = 'train2014'            #input directory to sample from
 TMP_PATH = 'tmp/'                 #tmp folder to put tmp images, caption jsons, etc.
 CAPTION_PATH = 'neuraltalk2/'       #captioning code folder
+MODEL_PATH = 'model/neuraltalk2/model_id1-501-1448236541.t7'
 
 #generate and save ablation
 #TODO: no need to save to disk. REALLY stupid.
@@ -38,7 +39,7 @@ for imgId, old, new in results:
 
 #captioning using shell call to torch
 run_cmd = "cd "+CAPTION_PATH + " && "+\
-          "th eval.lua -model ../model/neuraltalk2/model_id1-501-1448236541.t7 " +\
+          "th eval.lua -model  ../" +MODEL_PATH+\
           " -image_folder ../"+TMP_PATH+" && "+\
           " mv vis/vis.json ../tmp/"
 p = subprocess.Popen(run_cmd,shell=True, stdout=subprocess.PIPE)
