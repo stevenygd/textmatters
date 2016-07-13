@@ -3,5 +3,6 @@
 data/
 archive/
 tmp/
+model/
 .ipynb_checkpoints/
 *.pyc

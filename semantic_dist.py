@@ -3,7 +3,7 @@ Functions for computing semantic similarities.
 """
 from collections import defaultdict
 
-def pre_process(sentences, ignore=[]):
+def pre_process(sentences, ignore=set()):
     """Takes in a list of sentence strings, remove words that occur only once 
     in all sentences and words in the ignore list"""
     texts = [ [word for word in sentence.lower().split() if word not in ignore]
