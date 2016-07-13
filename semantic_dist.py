@@ -4,7 +4,7 @@ Functions for computing semantic similarities.
 from collections import defaultdict
 
 def pre_process(sentences, ignore=set()):
-    """Takes in a list of sentence strings, remove words that occur only once 
+    """Takes in a list of sentence strings, remove words that occur only once
     in all sentences and words in the ignore list"""
     texts = [ [word for word in sentence.lower().split() if word not in ignore]
               for sentence in sentences ]
@@ -27,6 +27,6 @@ def calc_inter_union(text1, text2):
     inter, union = set1 & set2, set1 | set2
 
     if len(union)==0:
-    	return 1.0	# since both texts are empty, they are identical
+        return 1.0    # since both texts are empty, they are identical
     else:
-    	return 1.0* len(inter)/len(union)
+        return 1.0* len(inter)/len(union)

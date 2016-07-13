@@ -20,6 +20,8 @@ import ablation
 import coco_text
 from semantic_dist import *
 
+# n samples per batch since reading and writing to disk is crappishly slow
+batch_size = 100
 
 IMG_PATH = 'data/coco/'
 IMG_TYPE = 'train2014'            #input directory to sample from
