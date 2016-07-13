@@ -12,6 +12,7 @@ from scipy import misc
 import json
 from pprint import pprint
 import subprocess
+from six.moves import cPickle as pkl
 
 import sys
 sys.path.insert(0, "coco-text/")  #directory for ablation codes
@@ -23,16 +24,28 @@ from semantic_dist import *
 # n samples per batch since reading and writing to disk is crappishly slow
 batch_size = 100
 
+INPUT_PATH = 'input/large_text_img_ids.pkl' #contains imgIds to compute the score for
+OUTPUT_PATH = 'output/'
 IMG_PATH = 'data/coco/'
 IMG_TYPE = 'train2014'            #input directory to sample from
 TMP_PATH = 'tmp/'                 #tmp folder to put tmp images, caption jsons, etc.
 CAPTION_PATH = 'neuraltalk2/'       #captioning code folder
 MODEL_PATH = 'model/neuraltalk2/model_id1-501-1448236541.t7'
 
+#read input image ids
+with open(INPUT_PATH) as f:
+    imgIds = pkl.load(f)
+    assert len(imgIds) > 0, "Found empty input."
+
+
 #generate and save ablation
 #TODO: no need to save to disk. REALLY stupid.
 text_data = coco_text.COCO_Text("coco-text/COCO_Text.json")
-results = ablation.gen_ablation(mode = 'gaussian', ct = text_data, ksize=(7,7),sigma=7.)
+results = ablation.gen_ablation(imgIds = imgIds, mode = 'gaussian', ct = text_data, ksize=(7,7),sigma=7.)
+
+#sanity check
+assert len(results)==len(imgIds), "Image missing after ablation, original {}, after {}".format(len(imgIds), len(results))
+
 for imgId, old, new in results:
     misc.imsave(TMP_PATH+str(imgId)+"_orig.jpg",old)
     misc.imsave(TMP_PATH+str(imgId)+"_ablt.jpg",new)
@@ -65,4 +78,14 @@ original = [d['caption'] for d in result[1::2]]
 stoplist = set('for a of the and to in its his her'.split())
 ablated, original = pre_process(ablated, ignore=stoplist),pre_process(original, ignore=stoplist)
 scores = map(lambda x: calc_inter_union(*x), zip(ablated, original))
-print scores
+
+#write results
+print("Saving results to "+OUTPUT_PATH)
+with open(OUTPUT_PATH+INPUT_PATH.split('/')[-1]) as f:
+    pkl.dump(scores, f, protocol=pkl.HIGHEST_PROTOCOL)
+print("Cleaning up")
+run_cmd = "rm "+TMP_PATH+"*"
+p = subprocess.Popen(run_cmd,shell=True)
+
+
+

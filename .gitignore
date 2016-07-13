@@ -6,3 +6,4 @@ tmp/
 model/
 .ipynb_checkpoints/
 *.pyc
+result/
