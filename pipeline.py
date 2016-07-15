@@ -53,7 +53,7 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_pat
     text_data = coco_text.COCO_Text("coco-text/COCO_Text.json")
     # Default mode is blackout
     imgIds = [int(x) for x in imgIds]
-    results = ablation.gen_ablation(imgIds = imgIds, mode=amode, ct = text_data, ksize=(7,7),sigma=7.)
+    results = ablation.gen_ablation(imgIds = imgIds, mode=amode, ct = text_data, ksize=(7,7),sigma=7., width=7)
 
     #sanity check
     assert len(results)==len(imgIds), "Image missing after ablation, original {}, after {}".format(len(imgIds), len(results))
