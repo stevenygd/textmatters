@@ -24,16 +24,14 @@ from semantic_dist import *
 # n samples per batch since reading and writing to disk is crappishly slow
 batch_size = 100
 
-INPUT_PATH = 'input/'
-# INPUT_FILE = 'large_text_img_blkout_ids.pkl' # contains imgIds to compute the score for
-INPUT_FILE = 'test.pkl' # contains imgIds to compute the score for
-OUTPUT_PATH = 'output/'
-IMG_PATH = 'data/coco/'
-IMG_TYPE = 'train2014'              # input directory to sample from
-TMP_PATH = 'tmp/'                   # tmp folder to put tmp images, caption jsons, etc.
-CAPTION_PATH = 'neuraltalk2/'       # captioning code folder
-MODEL_PATH = 'model/neuraltalk2/model_id1-501-1448236541.t7'
-
+INPUT_PATH   =  os.path.join(FD, 'input')
+INPUT_FILE   = 'test.pkl' # contains imgIds to compute the score for
+OUTPUT_PATH  = os.path.join(FD, 'output')
+IMG_PATH     = os.path.join(FD, 'data', 'coco')
+IMG_TYPE     = 'train2014'                            # input directory to sample from
+TMP_PATH     = os.path.join(FD, 'tmp')                # tmp folder to put tmp images, caption jsons, etc.
+CAPTION_PATH = os.path.join(FD, 'neuraltalk2')        # captioning code folder
+MODEL_PATH   = os.path.join(FD, 'model', 'neuraltalk2', 'model_id1-501-1448236541.t7')
 
 def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_path=TMP_PATH):
 
@@ -49,7 +47,6 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_pat
     with open(os.path.join(FD, INPUT_PATH, input_file)) as f:
         imgIds = pkl.load(f)
         assert len(imgIds) > 0, "Found empty input."
-
 
     # generate and save ablation
     # TODO: no need to save to disk. REALLY stupid.
@@ -67,9 +64,9 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_pat
 
     #captioning using shell call to torch
     run_cmd = "cd "+CAPTION_PATH + " && "+\
-              "th eval.lua -model  ../" +MODEL_PATH+\
+              "th eval.lua -model  " +MODEL_PATH+\
               " -num_images -1" + \
-              " -image_folder ../"+tmp_path
+              " -image_folder "+tmp_path
     p = subprocess.Popen(run_cmd,shell=True, stdout=subprocess.PIPE)
 
     #poll until finished
@@ -102,8 +99,9 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_pat
         pkl.dump(scores, f, protocol=pkl.HIGHEST_PROTOCOL)
 
 if __name__=="__main__":
+    run()
     # run(amode="gaussian", input_file="test.pkl", output_file="test", tmp_path="tmp_test")
     # run(amode="gaussian", input_file="large_text_img_ids.pkl", output_file="large_text_gaussian", tmp_path="tmp_large_text_gaussian")
     # run(amode="blackout", input_file="large_text_img_ids.pkl", output_file="large_text_blackout", tmp_path="tmp_large_text_blackout")
     # run(amode="gaussian", input_file="high_coexist_img_ids.pkl", output_file="highexist_gaussian", tmp_path="tmp_highexist_gaussian")
-    run(amode="blackout", input_file="high_coexist_img_ids.pkl", output_file="highexist_blackout", tmp_path="tmp_highexist_blackout")
+    # run(amode="blackout", input_file="high_coexist_img_ids.pkl", output_file="highexist_blackout", tmp_path="tmp_highexist_blackout")
