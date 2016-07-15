@@ -29,18 +29,17 @@ INPUT_FILE   = 'test.pkl' # contains imgIds to compute the score for
 OUTPUT_PATH  = os.path.join(FD, 'output')
 IMG_PATH     = os.path.join(FD, 'data', 'coco')
 IMG_TYPE     = 'train2014'                            # input directory to sample from
-TMP_PATH     = os.path.join(FD, 'tmp')                # tmp folder to put tmp images, caption jsons, etc.
 CAPTION_PATH = os.path.join(FD, 'neuraltalk2')        # captioning code folder
 MODEL_PATH   = os.path.join(FD, 'model', 'neuraltalk2', 'model_id1-501-1448236541.t7')
 
-def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_path=TMP_PATH):
+def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_size=1):
 
     # Clean up the previous results.
     print("Cleaning up")
-    abs_tmp_dir = os.path.join(FD, tmp_path)
+    abs_tmp_dir = os.path.join(FD, "tmp_%s"%output_file)
     if not os.path.exists(abs_tmp_dir):
         os.makedirs(abs_tmp_dir)
-     
+
     run_cmd = "rm " + abs_tmp_dir + "/*"
     p = subprocess.Popen(run_cmd,shell=True)
     while True:
@@ -63,14 +62,14 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_pat
     assert len(results)==len(imgIds), "Image missing after ablation, original {}, after {}".format(len(imgIds), len(results))
 
     for idx, (imgId, old, new) in enumerate(results):
-        misc.imsave(os.path.join(tmp_path, "%s_%s_orig.jpg"%(str(idx).zfill(16), str(imgId))),old)
-        misc.imsave(os.path.join(tmp_path, "%s_%s_ablt.jpg"%(str(idx).zfill(16), str(imgId))),new)
+        misc.imsave(os.path.join(abs_tmp_dir, "%s_%s_orig.jpg"%(str(idx).zfill(16), str(imgId))),old)
+        misc.imsave(os.path.join(abs_tmp_dir, "%s_%s_ablt.jpg"%(str(idx).zfill(16), str(imgId))),new)
 
     #captioning using shell call to torch
     run_cmd = "cd "+CAPTION_PATH + " && "+\
               "th eval.lua -model  " +MODEL_PATH+\
               " -num_images -1" + \
-              " -batch_size 100" + \
+              " -batch_size " + str(batch_size) + \
               " -image_folder "+ abs_tmp_dir
     p = subprocess.Popen(run_cmd,shell=True, stdout=subprocess.PIPE)
 
@@ -103,14 +102,18 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, tmp_pat
     with open(os.path.join(FD, OUTPUT_PATH, "scores_%s.pkl"%output_file), 'w+') as f:
         pkl.dump(scores, f, protocol=pkl.HIGHEST_PROTOCOL)
 
+def makePickle(fname, coco_image_ids):
+    with open(os.path.join(INPUT_PATH, fname),'w+') as f:
+        pkl.dump(coco_image_ids, f, protocol=pkl.HIGHEST_PROTOCOL)
+
 if __name__=="__main__":
     # run()
-    # run(amode="blackout", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian", tmp_path="tmp_rel_texts_gaussian")
-    run(amode="gaussian", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian", tmp_path="tmp_rel_texts_gaussian")
-    run(amode="blackout", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_blackout", tmp_path="tmp_no_rel_texts_blackout")
-    run(amode="gaussian", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_gaussian", tmp_path="tmp_no_rel_texts_gaussian")
+    # run(amode="blackout", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian")
+    # run(amode="gaussian", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian")
+    # run(amode="blackout", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_blackout")
+    # run(amode="gaussian", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_gaussian")
     # Previous experiments on the basic
-    # run(amode="gaussian", input_file="large_text_img_ids.pkl", output_file="large_text_gaussian", tmp_path="tmp_large_text_gaussian")
-    # run(amode="blackout", input_file="large_text_img_ids.pkl", output_file="large_text_blackout", tmp_path="tmp_large_text_blackout")
-    # run(amode="gaussian", input_file="high_coexist_img_ids.pkl", output_file="highexist_gaussian", tmp_path="tmp_highexist_gaussian")
-    # run(amode="blackout", input_file="high_coexist_img_ids.pkl", output_file="highexist_blackout", tmp_path="tmp_highexist_blackout")
+    # run(amode="gaussian", input_file="large_text_img_ids.pkl", output_file="large_text_gaussian")
+    # run(amode="blackout", input_file="large_text_img_ids.pkl", output_file="large_text_blackout")
+    # run(amode="gaussian", input_file="high_coexist_img_ids.pkl", output_file="highexist_gaussian")
+    # run(amode="blackout", input_file="high_coexist_img_ids.pkl", output_file="highexist_blackout")
