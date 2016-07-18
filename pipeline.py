@@ -108,6 +108,7 @@ def makePickle(fname, coco_image_ids):
 
 if __name__=="__main__":
     # run()
+    run(amode="median", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_median")
     # run(amode="blackout", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian")
     # run(amode="gaussian", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian")
     # run(amode="blackout", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_blackout")
