@@ -20,6 +20,7 @@ FD = os.path.dirname(os.path.realpath(__file__))
 import ablation
 import coco_text
 from semantic_dist import *
+import shutil
 
 # n samples per batch since reading and writing to disk is crappishly slow
 batch_size = 100
@@ -65,14 +66,24 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_s
     # generate and save ablation
     # Default mode is blackout
     imgIds = [int(x) for x in imgIds]
-    results = ablation.ablate(imgIds = imgIds, mode=amode, ct = ct, coco = coco, ksize=(7,7),sigma=7., width=7)
+    results = ablation.ablate(
+            imgIds = imgIds,
+            mode=amode,
+            out_path=abs_tmp_dir,
+            ct = ct,
+            coco = coco,
+            ksize=(7,7),
+            sigma=7.,
+            width=7)
 
     #sanity check
-    assert len(results)==len(imgIds), "Image missing after ablation, original {}, after {}".format(len(imgIds), len(results))
+    assert len(results)==len(imgIds), "Image missing after ablation, original %d, after %d"%(len(imgIds), len(results))
 
-    for idx, (imgId, old, new) in enumerate(results):
-        misc.imsave(os.path.join(abs_tmp_dir, "%s_%s_orig.jpg"%(str(idx).zfill(16), str(imgId))),old)
-        misc.imsave(os.path.join(abs_tmp_dir, "%s_%s_ablt.jpg"%(str(idx).zfill(16), str(imgId))),new)
+    # Move the original images into the folder, waiting for captioning.
+    for idx, (imgId, src, _) in enumerate(results):
+        dst = os.path.join(abs_tmp_dir, "%s_%s_orig.jpg"%(str(idx).zfill(16), str(imgId)))
+        print "Copy from %s to %s"%(src, dst)
+        shutil.copyfile(src, dst)
 
     #captioning using shell call to torch
     run_cmd = "cd "+CAPTION_PATH + " && "+\
