@@ -10,3 +10,6 @@
 [submodule "neuraltalk2"]
 	path = neuraltalk2
 	url = https://github.com/zhuyifan1996/neuraltalk2.git
+[submodule "coco"]
+	path = coco
+	url = https://github.com/pdollar/coco.git
