@@ -107,14 +107,12 @@ def makePickle(fname, coco_image_ids):
         pkl.dump(coco_image_ids, f, protocol=pkl.HIGHEST_PROTOCOL)
 
 if __name__=="__main__":
-    # run()
-    run(amode="median", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_median")
-    # run(amode="blackout", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian")
-    # run(amode="gaussian", input_file="rel_texts_img_ids.pkl", output_file="rel_texts_gaussian")
-    # run(amode="blackout", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_blackout")
-    # run(amode="gaussian", input_file="no_rel_texts_img_ids.pkl", output_file="no_rel_texts_gaussian")
-    # Previous experiments on the basic
-    # run(amode="gaussian", input_file="large_text_img_ids.pkl", output_file="large_text_gaussian")
-    # run(amode="blackout", input_file="large_text_img_ids.pkl", output_file="large_text_blackout")
-    # run(amode="gaussian", input_file="high_coexist_img_ids.pkl", output_file="highexist_gaussian")
-    # run(amode="blackout", input_file="high_coexist_img_ids.pkl", output_file="highexist_blackout")
+    import argparse
+    parser = argparse.ArgumentParser(description='Running experiments through neural talk caption generator')
+    parser.add_argument('--input_file',   default=INPUT_FILE, type=str, help='The name of the input file')
+    parser.add_argument('--ablt_meth' ,   default='gaussian', type=str, help='Add ablation methods.')
+    parser.add_argument('--out_file',     default=INPUT_FILE, type=str, help='Name of the out file')
+    parser.add_argument('--batch_size',   default=1,          type=int, help='The batch size')
+
+    args = parser.parse_args()
+    run(amode=args.ablt_meth, input_file=args.input_file, output_file=args.out_file, batch_size=args.batch_size)
