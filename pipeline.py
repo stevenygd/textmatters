@@ -32,6 +32,17 @@ IMG_TYPE     = 'train2014'                            # input directory to sampl
 CAPTION_PATH = os.path.join(FD, 'neuraltalk2')        # captioning code folder
 MODEL_PATH   = os.path.join(FD, 'model', 'neuraltalk2', 'model_id1-501-1448236541.t7')
 
+COCO_PATH = os.path.join(FD,'data','coco')
+COCO_ANNO_PATH = os.path.join(COCO_PATH, 'annotations')
+COCO_TEXT_PATH = os.path.join(FD, 'coco-text')
+sys.path.insert(0, COCO_TEXT_PATH)
+import coco_text as ct
+ct = ct.COCO_Text(os.path.join(COCO_TEXT_PATH, 'COCO_Text.json'))
+
+sys.path.insert(0, os.path.join(FD, 'coco', 'PythonAPI'))
+from pycocotools.coco import COCO
+coco = COCO(os.path.join(COCO_ANNO_PATH, 'instances_train2014.json'))
+
 def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_size=1):
 
     # Clean up the previous results.
@@ -52,11 +63,9 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_s
         assert len(imgIds) > 0, "Found empty input."
 
     # generate and save ablation
-    # TODO: no need to save to disk. REALLY stupid.
-    text_data = coco_text.COCO_Text("coco-text/COCO_Text.json")
     # Default mode is blackout
     imgIds = [int(x) for x in imgIds]
-    results = ablation.gen_ablation(imgIds = imgIds, mode=amode, ct = text_data, ksize=(7,7),sigma=7., width=7)
+    results = ablation.ablate(imgIds = imgIds, mode=amode, ct = ct, coco = coco, ksize=(7,7),sigma=7., width=7)
 
     #sanity check
     assert len(results)==len(imgIds), "Image missing after ablation, original {}, after {}".format(len(imgIds), len(results))
