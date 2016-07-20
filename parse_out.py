@@ -17,16 +17,30 @@ def parse(outPath):
     together the result as described above
 
     NOTE: Reads everything into memory at once, since out file is ~10M"""
-    def _parse_id(line):
-        """parse out the COCO id from the 'cp ...' line """
-        pat = re.compile('(?<=[0-9]{16}_)[0-9]+') # matches numbers preceded by 16 numbers followed by a '_'
-        mat = pat.search(line)
-        assert not mat is None, "this line does not contain a COCO image id: {}" % line 
+    # def _parse_id(line):
+    #     """parse out the COCO id from the 'cp ...' line """
+    #     pat = re.compile('(?<=[0-9]{16}_)[0-9]+') # matches numbers preceded by 16 numbers followed by a '_'
+    #     mat = pat.search(line)
+    #     assert not mat is None, ("this line does not contain a COCO image id: {}" % line )
 
-        s, e = mat.start(), mat.end()
-        return line[s:e], line[e+1:e+5] 
+    #     s, e = mat.start(), mat.end()
+    #     return line[s:e], line[e+1:e+5] 
+
+    def _parse_id(line):
+        """parse out the new format as in [no_text_has_instances.out]"""
+        ablt_pat = re.compile('(?<=2014_)[0-9]{12}(?=.jpg)')
+        orig_pat = re.compile('(?<=[0-9]{16}_)[0-9]+')
+        mat = ablt_pat.search(line)
+        if mat is None: #original image
+            mat = orig_pat.search(line)
+            assert not mat is None, ("this line does not contain a COCO image id: {}" % line )
+            return line[mat.start(): mat.end()], 'orig'
+        else: #ablated image
+            num = line[mat.start(): mat.end()]
+            return str(int(num)), 'ablt'
 
     with open(outPath, 'r') as f:
+        print "Reading out file..."
         content = f.read()
     
         l = content.split('\n')
@@ -36,6 +50,7 @@ def parse(outPath):
 
         d = OrderedDict() #dictionary from COCO-id to (orig_cap, new_cap)
 
+        print "Parsing img ids and captions..."
         for idx, id_line in enumerate(id_lines):
             cap = cap_lines[idx].split(':')[-1].strip()
             cocoid, cat = _parse_id(id_line)
@@ -43,6 +58,7 @@ def parse(outPath):
                 d[cocoid] = {}
             d[cocoid][cat] = cap
 
+        print "Computing scores..."
         #compute scores, need to preprocess all ablated captions and original captions
         stoplist = set('for a of the and to in its his her'.split())
         #believe that ordered dict guarantees iteration order!!!
@@ -60,6 +76,10 @@ def parse(outPath):
             d['ablation_method'] = 'gaussian'
         elif 'median' in l:
             d['ablation_method']  = 'median'
+        elif 'destroy' in l:
+            d['ablation_method']  = 'destroy'
+
+        print "The output ablation method is \"%s\"" % d['ablation_method']
         return d
 
 if __name__=='__main__':
