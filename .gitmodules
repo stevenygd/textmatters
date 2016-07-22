@@ -13,3 +13,6 @@
 [submodule "coco"]
 	path = coco
 	url = https://github.com/pdollar/coco.git
+[submodule "treelstm"]
+	path = treelstm
+	url = https://github.com/stevenygd/treelstm.git
