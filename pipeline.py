@@ -42,7 +42,7 @@ ct = ct.COCO_Text(os.path.join(COCO_TEXT_PATH, 'COCO_Text.json'))
 
 sys.path.insert(0, os.path.join(FD, 'coco', 'PythonAPI'))
 from pycocotools.coco import COCO
-coco = COCO(os.path.join(COCO_ANNO_PATH, 'instances_train2014.json'))
+coco = ablation.coco
 
 def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_size=1):
 
