@@ -12,4 +12,8 @@
 	url = https://github.com/zhuyifan1996/neuraltalk2.git
 [submodule "coco"]
 	path = coco
-	url = https://github.com/pdollar/coco.git
+    url = https://github.com/pdollar/coco.git
+[submodule "treelstm"]
+	path = treelstm 
+    url = https://github.com/stevenygd/treelstm.git 
+
