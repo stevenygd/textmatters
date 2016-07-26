@@ -72,12 +72,15 @@ def parse(outPath):
         l = id_lines[0]
         if 'blackout' in l:
             d['ablation_method'] = 'blackout'
+        elif 'median_bg' in l:
+            d['ablation_method'] = 'median_bg'
         elif 'gaussian' in l:
             d['ablation_method'] = 'gaussian'
         elif 'median' in l:
             d['ablation_method']  = 'median'
         elif 'destroy' in l:
             d['ablation_method']  = 'destroy'
+
 
         print "The output ablation method is \"%s\"" % d['ablation_method']
         return d

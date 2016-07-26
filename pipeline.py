@@ -44,7 +44,7 @@ sys.path.insert(0, os.path.join(FD, 'coco', 'PythonAPI'))
 from pycocotools.coco import COCO
 coco = ablation.coco
 
-def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_size=1):
+def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_size=1, category = ''):
 
     # Clean up the previous results.
     print("Cleaning up")
@@ -66,15 +66,25 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_s
     # generate and save ablation
     # Default mode is blackout
     imgIds = [int(x) for x in imgIds]
-    results = ablation.ablate(
-            imgIds = imgIds,
-            mode=amode,
-            out_path=abs_tmp_dir,
-            ct = ct,
-            coco = coco,
-            ksize=(7,7),
-            sigma=7.,
-            width=7)
+    args = {'imgIds' = imgIds,
+            'mode'=amode,
+            'out_path'=abs_tmp_dir,
+            'ct' = ct,
+            'coco' = coco,
+            'ksize'=(7,7),
+            'sigma'=7.,
+            'width'=7}
+    if category != '': args['category'] = category
+    results = ablation.ablate(**args)
+    # results = ablation.ablate(
+    #         imgIds = imgIds,
+    #         mode=amode,
+    #         out_path=abs_tmp_dir,
+    #         ct = ct,
+    #         coco = coco,
+    #         ksize=(7,7),
+    #         sigma=7.,
+    #         width=7)
 
     #sanity check
     assert len(results)==len(imgIds), "Image missing after ablation, original %d, after %d"%(len(imgIds), len(results))
@@ -133,6 +143,9 @@ if __name__=="__main__":
     parser.add_argument('--ablt_meth' ,   default='gaussian', type=str, help='Add ablation methods.')
     parser.add_argument('--out_file',     default=INPUT_FILE, type=str, help='Name of the out file')
     parser.add_argument('--batch_size',   default=1,          type=int, help='The batch size')
+    parser.add_argument('--category',     default='',         type=str, help='The category to be preserved in ablation,\
+        If none will preserve all instances or according to ablt_meth')
 
     args = parser.parse_args()
-    run(amode=args.ablt_meth, input_file=args.input_file, output_file=args.out_file, batch_size=args.batch_size)
+    run(amode=args.ablt_meth, input_file=args.input_file, output_file=args.out_file, batch_size=args.batch_size,
+        category = args.category)
