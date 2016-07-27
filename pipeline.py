@@ -66,14 +66,14 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_s
     # generate and save ablation
     # Default mode is blackout
     imgIds = [int(x) for x in imgIds]
-    args = {'imgIds' = imgIds,
-            'mode'=amode,
-            'out_path'=abs_tmp_dir,
-            'ct' = ct,
-            'coco' = coco,
-            'ksize'=(7,7),
-            'sigma'=7.,
-            'width'=7}
+    args = {'imgIds' : imgIds,
+            'mode':amode,
+            'out_path':abs_tmp_dir,
+            'ct' : ct,
+            'coco' : coco,
+            'ksize':(7,7),
+            'sigma':7.,
+            'width':7}
     if category != '': args['category'] = category
     results = ablation.ablate(**args)
     # results = ablation.ablate(
