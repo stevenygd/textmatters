@@ -73,7 +73,7 @@ def run(amode='gaussian', input_file=INPUT_FILE, output_file=INPUT_FILE, batch_s
             'coco' : coco,
             'ksize':(7,7),
             'sigma':7.,
-            'width':7}
+            'width':71}
     if category != '': args['category'] = category
     results = ablation.ablate(**args)
     # results = ablation.ablate(
