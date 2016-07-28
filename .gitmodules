@@ -16,3 +16,6 @@
 [submodule "treelstm"]
 	path = treelstm
 	url = https://github.com/stevenygd/treelstm.git
+[submodule "densecap"]
+	path = densecap
+	url = https://github.com/stevenygd/densecap.git
